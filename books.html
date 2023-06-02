@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>DevLib</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+        <link rel="stylesheet" href="nav.css">
+        <script src="nav.js"></script>
+        <style>
+            a {
+                text-decoration: none;
+                color:black;
+            }          
+            .jumbotron {
+            background-color: #1f221f; /* Orange */
+            color: #ffffff;
+            border-radius: 15px;
+            }
+            .text {
+				text-align:center;
+                padding:5px;
+			}
+    
+            /* Add some padding inside the card container */
+            .container {
+            padding: 2px 16px;
+            }
+            i {
+                margin-left: 50px;
+                margin-top: 5px;
+            }
+            .graph{
+                margin-left:270px;
+                margin-top: 30px;
+                margin-bottom: 30px;
+            }
+            footer {
+                background-color: #1f221f;
+                margin-top:10px;
+                color: white;
+                padding:20px;
+            }              
+            .touch {
+                background-color: #1f221f;
+                color:#f7c0fd;
+                width: 80px;
+                height:30px;
+                border-radius: 10px;
+            }
+            .add:hover{
+                background-color: #dbdada;
+                color: black;
+                cursor: pointer;
+                border: 1px solid black;
+            }
+            #footer {
+                float:left; 
+                clear: left;
+            }         
+            .card {
+                display: inline;
+                margin: 0;
+                padding: 5px 20px;
+                float:left  /* second part */
+            }
+            ul {
+            list-style: none;
+            }
+            input {
+                background-color: #f8e9f9;
+                width:200px;
+                height:20px;
+                padding:2px;
+                padding-left: 10px;
+            }
+            .dropdown {
+                float:left;
+                margin-top:50px;
+                margin-left: 50px;
+            }
+            .add {
+                width: 120px;
+                height:35px;
+                font-size: 20px;
+            }
+            body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            }
+
+            h1 {
+            text-align: center;
+            }
+
+            #filter-container {
+            margin-bottom: 20px;
+            }
+
+            #filter-container input {
+            margin-right: 10px;
+            }
+
+            #book-list {
+            margin-bottom: 20px;
+            }
+
+            .book-item {
+            margin-bottom: 10px;
+            }
+
+            #pagination {
+            text-align: center;
+            }
+
+            .pagination-link {
+            display: inline-block;
+            margin-right: 5px;
+            cursor: pointer;
+            }
+            .book-card {
+            border: 1px solid #68115b;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fedcfc;
+            }
+            .book-card:hover {
+                background-color: #2e312e;
+                border: 1px solid violet;
+                color:#ffffff;
+            }
+            .book-details h3 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            }
+
+            .book-details p {
+            margin: 5px 0;
+            }
+            .pagination-link {
+            display: inline-block;
+            margin-right: 5px;
+            cursor: pointer;
+            padding: 5px 10px;
+            background-color: #eaeaea;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            }
+
+            .pagination-link.active {
+            background-color: #ccc;
+            }
+
+            .pagination-link:hover {
+            background-color: #ddd;
+            }
+
+        </style>
+    </head>
+    <body style="background-color: #ececec;">
+        <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="index.html"> Dashboard</a>
+        <a href="books.html"> Books</a>
+        <a href="members.html">Members</a>
+        <a href="library.html">Library Due</a>
+        <a href="contact.html">Contact</a>
+        </div>
+        <!-- Use any element to open the sidenav -->
+        <div class="hd" style="float: left;">
+            <button onclick="openNav()" class="btned">&#9776;</button>
+        </div>
+        <div style="float: right;">
+            <a href="addBook.html"><button class="add touch btn btn-default btn-lg">Add Book</button></a>
+        </div>
+        <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
+        <div id="hd">
+            <h1>Books</h1>
+        </div>
+              
+        <div id="filter-container">
+            <label for="title-filter">Title:</label>
+            <input type="text" id="title-filter" oninput="applyFilters()">
+            <label for="author-filter">Author:</label>
+            <input type="text" id="author-filter" oninput="applyFilters()">
+            <label for="subject-filter">Subject:</label>
+            <input type="text" id="subject-filter" oninput="applyFilters()">
+            <label for="date-filter">Publish Date:</label>
+            <input type="date" id="date-filter" onchange="applyFilters()">
+          </div>
+        
+          <div id="book-list">
+            <!-- Book items will be added dynamically here -->
+          </div>
+        
+          <div id="pagination">
+            <!-- Pagination links will be added dynamically here -->
+          </div>
+        <footer id="footer">
+            <p>"Explore a world of knowledge at your fingertips with our library website portal. Discover a vast collection of books, articles, and resources in various formats. Access e-books, audiobooks, research databases, and more. Stay connected to the literary realm, expand your horizons, and embark on intellectual adventures with ease."</p>
+            <h4 style="text-align: center;"> &#169; Copyright 2023 by DevLib. All rights Reserved.</h4>
+        </footer>
+    </body>
+    <script>
+        // Assume 'data' is an array containing the database records
+        const books = [
+           
+            { title: "Pride and Prejudice", author: "Jane Austen", subject: "Romance", publishDate:"20.04.1980"},
+            { title: "The Great Gatsby", author: "F. Scott Fitzgerald", subject: "Classic", publishDate:"07.06.1992" },
+            { title: "Moby-Dick", author: "Herman Melville", subject: "Adventure", publishDate:"26.06.2001" },
+            { title: "The Lord of the Rings", author: "J.R.R. Tolkien", subject: "Fantasy", publishDate:"12.12.2000" },
+            { title: "The Catcher in the Rye", author: "J.D. Salinger", subject: "Coming-of-age", publishDate:"29.03.1999" },
+            { title: "To the Lighthouse", author: "Virginia Woolf", subject: "Modernist", publishDate:"26.09.1976" },
+            { title: "Brave New World", author: "Aldous Huxley", subject: "Dystopian", publishDate:"20.04.1980" },
+            { title: "Jane Eyre", author: "Charlotte Bronte", subject: "Gothic", publishDate:"22.05.1980" },
+            // Add more novel data records here...
+            { title: "Crime and Punishment", author: "Fyodor Dostoevsky", subject: "Psychological", publishDate:"26.06.2001" },
+            { title: "The Picture of Dorian Gray", author: "Oscar Wilde", subject: "Gothic", publishDate:"12.12.2000" },
+            { title: "The Alchemist", author: "Paulo Coelho", subject: "Fantasy", publishDate:"26.06.2001" },
+            { title: "The Odyssey", author: "Homer", subject: "Epic", publishDate:"29.03.1999"  },
+            { title: "The Adventures of Tom Sawyer", author: "Mark Twain", subject: "Adventure", publishDate:"29.03.1999"  },
+            { title: "The Grapes of Wrath", author: "John Steinbeck", subject: "Historical", publishDate:"26.06.2001" },
+            { title: "One Hundred Years of Solitude", author: "Gabriel Garcia Marquez", subject: "Magical Realism", publishDate:"29.03.1999" },
+            { title: "Gone with the Wind", author: "Margaret Mitchell", subject: "Historical", publishDate:"29.03.1999"  },
+            { title: "Slaughterhouse-Five", author: "Kurt Vonnegut", subject: "Satire", publishDate:"12.12.2000" },
+            { title: "The Hobbit", author: "J.R.R. Tolkien", subject: "Fantasy", publishDate:"29.03.1999"  },
+            { title: "War and Peace", author: "Leo Tolstoy", subject: "Historical", publishDate:"29.03.1999" },
+            { title: "Anna Karenina", author: "Leo Tolstoy", subject: "Romance", publishDate:"29.03.2000"  },
+            { title: "The Scarlet Letter", author: "Nathaniel Hawthorne", subject: "Historical" , publishDate:"20.11.2010" },
+            { title: "Frankenstein", author: "Mary Shelley", subject: "Gothic", publishDate:"29.03.2000" },
+            { title: "Wuthering Heights", author: "Emily Bronte", subject: "Gothic", publishDate:"12.12.2000" },
+            { title: "The Chronicles of Narnia", author: "C.S. Lewis", subject: "Fantasy", publishDate:"20.11.2010" },
+            { title: "The Count of Monte Cristo", author: "Alexandre Dumas", subject: "Adventure", publishDate:"29.03.1999"  },
+            { title: "A Tale of Two Cities", author: "Charles Dickens", subject: "Historical" , publishDate:"16.05.1974"  },
+            { title: "Les Miserables", author: "Victor Hugo", subject: "Historical" , publishDate:"19.04.1945"  },
+            { title: "The Brothers Karamazov", author: "Fyodor Dostoevsky", subject: "Philosophical" , publishDate:"05.05.1964"  },
+            { title: "Lord of the Flies", author: "William Golding", subject: "Dystopian", publishDate:"12.12.2000"},
+            { title: "The Handmaid's Tale", author: "Margaret Atwood", subject: "Dystopian", publishDate:"20.11.2010" },
+            { title: "The Stranger", author: "Albert Camus", subject: "Existential" , publishDate:"16.05.1974" },
+            { title: "Beloved", author: "Toni Morrison", subject: "Historical" , publishDate:"29.01.2002" },
+            { title: "The Adventures of Huckleberry Finn", author: "Mark Twain", subject: "Adventure" , publishDate:"16.05.1974"  },
+            { title: "Catch-22", author: "Joseph Heller", subject: "Satire", publishDate:"20.11.2010" },
+            { title: "The Sun Also Rises", author: "Ernest Hemingway", subject: "Modernist" , publishDate:"23.10.1979"  },
+            { title: "The Shining", author: "Stephen King", subject: "Horror" , publishDate:"29.01.2002" },
+            { title: "The Trial", author: "Franz Kafka", subject: "Existential", publishDate:"26.06.2001" },
+            { title: "The Handmaid's Tale", author: "Margaret Atwood", subject: "Dystopian" , publishDate:"15.09.1965"  },
+            { title: "1984", author: "George Orwell", subject: "Dystopian" , publishDate:"14.05.1979"  },
+            { title: "To Kill a Mockingbird", author: "Harper Lee",subject: "Classic" , publishDate:"16.04.1945"  },
+            { title: "Animal Farm", author: "George Orwell", subject: "Satire", publishDate:"26.06.2001" },
+            { title: "Fahrenheit 451", author: "Ray Bradbury", subject: "Dystopian"  , publishDate:"16.04.1945" },
+            { title: "Lord of the Flies", author: "William Golding",subject: "Dystopian" , publishDate:"29.01.2002" },
+            { title: "A Song of Ice and Fire", author: "George R.R. Martin", subject: "Fantasy" , publishDate:"16.04.1945"  },
+            { title: "Don Quixote", author: "Miguel de Cervantes", subject: "Adventure" , publishDate:"19.04.1995"  },
+            { title: "The Kite Runner", author: "Khaled Hosseini", subject: "Drama" , publishDate:"29.01.2002"},
+            {title: "Revolution 2020",author: "Chetan Bhagat", subject:"Romance" , publishDate:"19.09.1945" },
+            {title: "The Girl in room 105",author: "Chetan Bhagat", subject:"Romance", publishDate:"20.11.2010"},
+        ];
+        
+let filteredBooks = [];
+let currentPage = 1;
+const booksPerPage = 10;
+
+// Initialize the page
+applyFilters();
+
+// Function to render the list of books
+function renderBooks() {
+  const bookListContainer = document.getElementById('book-list');
+  bookListContainer.innerHTML = '';
+
+  for (let i = (currentPage - 1) * booksPerPage; i < currentPage * booksPerPage; i++) {
+    const book = filteredBooks[i];
+    if (!book) break;
+
+    const bookCard = document.createElement('div');
+    bookCard.classList.add('book-card');
+    bookCard.innerHTML = `
+      <div class="book-details">
+        <h3>${book.title}</h3>
+        <p><strong>Author:</strong> ${book.author}</p>
+        <p><strong>Subject:</strong> ${book.subject}</p>
+        <p><strong>Publish Date:</strong> ${book.publishDate}</p>
+      </div>
+    `;
+
+    bookListContainer.appendChild(bookCard);
+  }
+}
+
+// Function to render the pagination links
+function renderPagination() {
+  const paginationContainer = document.getElementById('pagination');
+  paginationContainer.innerHTML = '';
+
+  const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
+  for (let i = 1; i <= totalPages; i++) {
+    const pageLink = document.createElement('span');
+    pageLink.classList.add('pagination-link');
+    pageLink.textContent = i;
+    if (i === currentPage) {
+      pageLink.classList.add('active');
+    } else {
+      pageLink.addEventListener('click', () => {
+        currentPage = i;
+        renderBooks();
+        renderPagination();
+      });
+    }
+    paginationContainer.appendChild(pageLink);
+  }
+}
+
+// Function to apply filters and update the book list
+function applyFilters() {
+  const titleFilter = document.getElementById('title-filter').value.toLowerCase();
+  const authorFilter = document.getElementById('author-filter').value.toLowerCase();
+  const subjectFilter = document.getElementById('subject-filter').value.toLowerCase();
+  const dateFilter = document.getElementById('date-filter').value;
+
+  filteredBooks = books.filter(book => {
+    const titleMatch = book.title.toLowerCase().includes(titleFilter);
+    const authorMatch = book.author.toLowerCase().includes(authorFilter);
+    const subjectMatch = book.subject.toLowerCase().includes(subjectFilter);
+    const dateMatch = dateFilter ? book.publishDate === dateFilter : true;
+
+    return titleMatch && authorMatch && subjectMatch && dateMatch;
+  });
+
+  currentPage = 1;
+  renderBooks();
+  renderPagination();
+}
+
+</script>
+</html>
